@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import { InputTitle, InputDescription } from '../../util/style';
+import { useDispatch, useSelector } from 'react-redux';
+import { InitialState, setDescription, setTitle } from '../../store/slice';
+
 const Wrapper = styled.div`
   background-color: white;
   border: 1px solid #d5d7db;
@@ -25,12 +28,31 @@ const Header = styled.div`
 `;
 
 function Title() {
+  const dispatch = useDispatch();
+  const question = useSelector((state: InitialState) => state.question);
+
+  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setTitle({ text: e.target.value }));
+  };
+
+  const onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(setDescription({ text: e.target.value }));
+  };
+
   return (
     <Wrapper>
       <Header></Header>
       <Container>
-        <InputTitle placeholder="설문지 제목"></InputTitle>
-        <InputDescription placeholder="설문지 설명"></InputDescription>
+        <InputTitle
+          placeholder="설문지 제목"
+          onChange={onChangeTitle}
+          value={question.title}
+        ></InputTitle>
+        <InputDescription
+          placeholder="설문지 설명"
+          onChange={onChangeDescription}
+          value={question.description}
+        ></InputDescription>
       </Container>
     </Wrapper>
   );
