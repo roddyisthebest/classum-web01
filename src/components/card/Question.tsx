@@ -8,7 +8,15 @@ import {
   RiDeleteBin6Line,
 } from 'react-icons/ri';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { Question as QuestionType, deleteQuestion } from '../../store/slice';
+import {
+  Question as QuestionType,
+  addContent,
+  deleteContent,
+  deleteQuestion,
+  setQuestionTitle,
+  setType,
+  updateContent,
+} from '../../store/slice';
 import { useDispatch } from 'react-redux';
 
 const Container = styled.div`
@@ -148,9 +156,9 @@ const UpdateSection = styled.div`
   gap: 0 15px;
 `;
 
-function Question({ data }: { data: QuestionType }) {
+function Question({ data, index }: { data: QuestionType; index: number }) {
   interface Type {
-    idx: number;
+    typeIdx: number;
     englishName: string;
     koreanName: string;
   }
@@ -163,15 +171,15 @@ function Question({ data }: { data: QuestionType }) {
   const dispatch = useDispatch();
 
   const types: Type[] = [
-    { idx: 1, englishName: 'short sentence', koreanName: '단답형' },
-    { idx: 2, englishName: 'long sentence', koreanName: '장문형' },
-    { idx: 3, englishName: 'multiple choice', koreanName: '객관식' },
-    { idx: 4, englishName: 'checkBox', koreanName: '체크박스' },
-    { idx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
+    { typeIdx: 1, englishName: 'short sentence', koreanName: '단답형' },
+    { typeIdx: 2, englishName: 'long sentence', koreanName: '장문형' },
+    { typeIdx: 3, englishName: 'multiple choice', koreanName: '객관식' },
+    { typeIdx: 4, englishName: 'checkBox', koreanName: '체크박스' },
+    { typeIdx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
   ];
 
   const [chosenType, setChosenType] = useState<Type>({
-    idx: 3,
+    typeIdx: 3,
     englishName: 'multiple choice',
     koreanName: '객관식',
   });
@@ -187,55 +195,80 @@ function Question({ data }: { data: QuestionType }) {
   }, []);
 
   const onClickItem = useCallback((type: Type) => {
-    setChosenType(type);
+    dispatch(setType({ type, questionIndex: index }));
     setVisibility(false);
   }, []);
 
-  const onClickDeleteBtn = () => {
+  const onClickDeleteQsBtn = () => {
     dispatch(deleteQuestion({ questionIdx: data.questionIdx }));
   };
 
-  const addContent = () => {
-    setContents((prev) => [
-      ...prev,
-      {
-        idx: contents[contents.length - 1].idx + 1,
-        text: `옵션 ${contents.length + 1}`,
-      },
-    ]);
+  const onClickAddBtn = () => {
+    dispatch(addContent({ questionIndex: index }));
+
+    // setContents((prev) => [
+    //   ...prev,
+    //   {
+    //     idx: contents[contents.length - 1].idx + 1,
+    //     text: `옵션 ${contents.length + 1}`,
+    //   },
+    // ]);
   };
 
-  const updateContent = (index: number, text: string) => {
-    const copyContents = [...contents];
-    copyContents.splice(index, 1, { ...contents[index], text });
-    setContents(copyContents);
+  const onChangeCtInput = (contentIndex: number, text: string) => {
+    dispatch(
+      updateContent({
+        questionIndex: index,
+        contentIndex,
+        text,
+      })
+    );
   };
 
-  const deleteContent = (idx: number) => {
-    setContents((prev) => prev.filter((cont) => cont.idx !== idx));
+  const onClickDeleteCtBtn = (idx: number) => {
+    dispatch(
+      deleteContent({ contentIdx: idx, questionIndex: data.questionIdx })
+    );
   };
 
   const check = {
-    isItTextType: () => chosenType.idx === 1 || chosenType.idx === 2,
-    isItMultipleType: () => chosenType.idx === 3,
-    isItCheckBoxType: () => chosenType.idx === 4,
-    isItDropdownType: () => chosenType.idx === 5,
-    isThereOneContent: () => contents.length === 1,
-    isItLastElement: (index: number) => index === contents.length - 1,
+    isItTextType: () => data.type?.typeIdx === 1 || data.type?.typeIdx === 2,
+    isItMultipleType: () => data.type?.typeIdx === 3,
+    isItCheckBoxType: () => data.type?.typeIdx === 4,
+    isItDropdownType: () => data.type?.typeIdx === 5,
+    isThereOneContent: () => data.contents.length === 1,
+    isItLastElement: (index: number) => index === data.contents.length - 1,
+  };
+
+  const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setQuestionTitle({
+        questionIndex: data.questionIdx,
+        text: e.target.value,
+      })
+    );
   };
 
   return (
     <Container>
       <TitleSection>
-        <ModifiedInputTitle placeholder="질문"></ModifiedInputTitle>
+        <ModifiedInputTitle
+          placeholder="질문"
+          value={data.title}
+          onChange={onChangeTitle}
+        ></ModifiedInputTitle>
         <SelectBox onClick={onClickBox}>
-          <SelectText>{chosenType.koreanName}</SelectText>
+          <SelectText>{data.type?.koreanName}</SelectText>
           <RiArrowDownSFill fontSize={20}></RiArrowDownSFill>
         </SelectBox>
 
         <SelectList visibility={visibility}>
           {types.map((type) => (
-            <SelectItem key={type.idx} isChecked={false}>
+            <SelectItem
+              key={type.typeIdx}
+              isChecked={type.typeIdx === data.type?.typeIdx}
+              onClick={() => onClickItem(type)}
+            >
               {type.koreanName}
             </SelectItem>
           ))}
@@ -243,11 +276,11 @@ function Question({ data }: { data: QuestionType }) {
       </TitleSection>
       <ContentSection>
         {check.isItTextType() ? (
-          <Sentence>{chosenType.koreanName} 텍스트</Sentence>
+          <Sentence>{data.type?.koreanName} 텍스트</Sentence>
         ) : (
           <>
-            {contents.map((content, index) => (
-              <Content key={content.idx}>
+            {data.contents.map((content, index) => (
+              <Content key={content.contentIdx}>
                 {check.isItMultipleType() && (
                   <RiCheckboxBlankCircleLine
                     fontSize={25}
@@ -266,12 +299,14 @@ function Question({ data }: { data: QuestionType }) {
 
                 <ModifiedInputContent
                   placeholder="질문"
-                  onChange={(e) => updateContent(index, e.target.value)}
+                  onChange={(e) => onChangeCtInput(index, e.target.value)}
                   value={content.text}
                   autoFocus={check.isItLastElement(index)}
                 ></ModifiedInputContent>
                 {!check.isThereOneContent() && (
-                  <NoodButton onClick={() => deleteContent(content.idx)}>
+                  <NoodButton
+                    onClick={() => onClickDeleteCtBtn(content.contentIdx)}
+                  >
                     <TiDeleteOutline
                       color="#6e7377"
                       fontSize={25}
@@ -294,15 +329,15 @@ function Question({ data }: { data: QuestionType }) {
                 ></RiCheckboxBlankLine>
               )}
               {check.isItDropdownType() && (
-                <ContentText>{contents.length + 1}</ContentText>
+                <ContentText>{data.contents.length + 1}</ContentText>
               )}
-              <NoodButton onClick={addContent}>추가하기</NoodButton>
+              <NoodButton onClick={onClickAddBtn}>추가하기</NoodButton>
             </Content>
           </>
         )}
       </ContentSection>
       <UpdateSection>
-        <NoodButton onClick={onClickDeleteBtn}>
+        <NoodButton onClick={onClickDeleteQsBtn}>
           <RiDeleteBin6Line></RiDeleteBin6Line>
         </NoodButton>
       </UpdateSection>

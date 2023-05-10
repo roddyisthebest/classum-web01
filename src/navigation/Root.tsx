@@ -44,8 +44,12 @@ function Root() {
     <Container>
       <Title></Title>
       <QuestionList>
-        {questions.map((question) => (
-          <Question data={question} key={question.questionIdx}></Question>
+        {questions.map((question, index) => (
+          <Question
+            data={question}
+            key={question.questionIdx}
+            index={index}
+          ></Question>
         ))}
         <AddButton onClick={onClickAddBtn}>질문 추가</AddButton>
       </QuestionList>

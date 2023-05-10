@@ -11,6 +11,7 @@ interface Content {
 
 export interface Question {
   questionIdx: number;
+  title: string;
   type: Type | null;
   contents: Content[];
 }
@@ -29,12 +30,18 @@ const { actions, reducer } = createSlice({
     questions: [
       {
         questionIdx: 0,
+        title: '',
         type: {
           typeIdx: 3,
           englishName: 'multiple choice',
           koreanName: '객관식',
         },
-        contents: [],
+        contents: [
+          {
+            contentIdx: 0,
+            text: '옵션1',
+          },
+        ],
       },
     ],
   } as InitialState,
@@ -53,6 +60,19 @@ const { actions, reducer } = createSlice({
       questions.splice(payload.questionIndex, 1, {
         ...questions[payload.questionIndex],
         type: payload.type,
+      });
+
+      return { ...state, questions };
+    },
+    setQuestionTitle(
+      state,
+      { payload }: PayloadAction<{ text: string; questionIndex: number }>
+    ) {
+      const questions = [...state.questions];
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        title: payload.text,
       });
 
       return { ...state, questions };
@@ -109,19 +129,25 @@ const { actions, reducer } = createSlice({
         text: string;
       }>
     ) {
+      console.log(payload.contentIndex, 'contentIndex');
+      console.log(payload.questionIndex, 'questionIndex');
       const questions = [...state.questions];
 
-      let contents = state.questions[payload.questionIndex].contents;
+      const contents = [...state.questions[payload.questionIndex].contents];
 
       contents.splice(payload.contentIndex, 1, {
         ...contents[payload.contentIndex],
         text: payload.text,
       });
 
+      console.log(contents, 'contents');
+
       questions.splice(payload.questionIndex, 1, {
         ...questions[payload.questionIndex],
         contents,
       });
+
+      console.log(questions, 'questions');
       return {
         ...state,
         questions,
@@ -133,6 +159,7 @@ const { actions, reducer } = createSlice({
         questions: [
           ...state.questions,
           {
+            title: '',
             questionIdx:
               state.questions.length === 0
                 ? 0
@@ -142,7 +169,12 @@ const { actions, reducer } = createSlice({
               englishName: 'multiple choice',
               koreanName: '객관식',
             },
-            contents: [],
+            contents: [
+              {
+                contentIdx: 0,
+                text: '옵션1',
+              },
+            ],
           },
         ],
       };
@@ -167,6 +199,7 @@ export const {
   updateContent,
   addQuestion,
   deleteQuestion,
+  setQuestionTitle,
 } = actions;
 
 export default reducer;
