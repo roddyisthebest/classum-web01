@@ -5,10 +5,11 @@ import {
   RiArrowDownSFill,
   RiCheckboxBlankLine,
   RiCheckboxBlankCircleLine,
+  RiDeleteBin6Line,
 } from 'react-icons/ri';
-
 import { TiDeleteOutline } from 'react-icons/ti';
-import { Question as QuestionType } from '../../store/slice';
+import { Question as QuestionType, deleteQuestion } from '../../store/slice';
+import { useDispatch } from 'react-redux';
 
 const Container = styled.div`
   background-color: white;
@@ -138,6 +139,15 @@ const NoodButton = styled.button`
   cursor: pointer;
 `;
 
+const UpdateSection = styled.div`
+  border-top: 1px solid #d5d7db;
+  padding-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0 15px;
+`;
+
 function Question({ data }: { data: QuestionType }) {
   interface Type {
     idx: number;
@@ -149,6 +159,8 @@ function Question({ data }: { data: QuestionType }) {
     idx: number;
     text: string;
   }
+
+  const dispatch = useDispatch();
 
   const types: Type[] = [
     { idx: 1, englishName: 'short sentence', koreanName: '단답형' },
@@ -178,6 +190,10 @@ function Question({ data }: { data: QuestionType }) {
     setChosenType(type);
     setVisibility(false);
   }, []);
+
+  const onClickDeleteBtn = () => {
+    dispatch(deleteQuestion({ questionIdx: data.questionIdx }));
+  };
 
   const addContent = () => {
     setContents((prev) => [
@@ -285,6 +301,11 @@ function Question({ data }: { data: QuestionType }) {
           </>
         )}
       </ContentSection>
+      <UpdateSection>
+        <NoodButton onClick={onClickDeleteBtn}>
+          <RiDeleteBin6Line></RiDeleteBin6Line>
+        </NoodButton>
+      </UpdateSection>
     </Container>
   );
 }

@@ -134,7 +134,9 @@ const { actions, reducer } = createSlice({
           ...state.questions,
           {
             questionIdx:
-              state.questions[state.questions.length - 1].questionIdx + 1,
+              state.questions.length === 0
+                ? 0
+                : state.questions[state.questions.length - 1].questionIdx + 1,
             type: {
               typeIdx: 3,
               englishName: 'multiple choice',
@@ -143,6 +145,14 @@ const { actions, reducer } = createSlice({
             contents: [],
           },
         ],
+      };
+    },
+    deleteQuestion(state, { payload }: PayloadAction<{ questionIdx: number }>) {
+      return {
+        ...state,
+        questions: state.questions.filter(
+          (quetion) => quetion.questionIdx !== payload.questionIdx
+        ),
       };
     },
   },
@@ -156,6 +166,7 @@ export const {
   deleteContent,
   updateContent,
   addQuestion,
+  deleteQuestion,
 } = actions;
 
 export default reducer;
