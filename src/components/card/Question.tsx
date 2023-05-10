@@ -8,9 +8,11 @@ import {
   RiDeleteBin6Line,
 } from 'react-icons/ri';
 import { TiDeleteOutline } from 'react-icons/ti';
+import { MdContentCopy } from 'react-icons/md';
 import {
   Question as QuestionType,
   addContent,
+  copyQuestion,
   deleteContent,
   deleteQuestion,
   setQuestionTitle,
@@ -203,6 +205,10 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     dispatch(deleteQuestion({ questionIdx: data.questionIdx }));
   };
 
+  const onClickCopyQsBtn = () => {
+    dispatch(copyQuestion({ questionIndex: index }));
+  };
+
   const onClickAddBtn = () => {
     dispatch(addContent({ questionIndex: index }));
 
@@ -337,6 +343,9 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
         )}
       </ContentSection>
       <UpdateSection>
+        <NoodButton onClick={onClickCopyQsBtn}>
+          <MdContentCopy></MdContentCopy>
+        </NoodButton>
         <NoodButton onClick={onClickDeleteQsBtn}>
           <RiDeleteBin6Line></RiDeleteBin6Line>
         </NoodButton>

@@ -187,6 +187,18 @@ const { actions, reducer } = createSlice({
         ),
       };
     },
+    copyQuestion(state, { payload }: PayloadAction<{ questionIndex: number }>) {
+      return {
+        ...state,
+        questions: [
+          ...state.questions,
+          {
+            ...state.questions[payload.questionIndex],
+            questionIdx: state.questions[payload.questionIndex].questionIdx + 1,
+          },
+        ],
+      };
+    },
   },
 });
 
@@ -199,6 +211,7 @@ export const {
   updateContent,
   addQuestion,
   deleteQuestion,
+  copyQuestion,
   setQuestionTitle,
 } = actions;
 
