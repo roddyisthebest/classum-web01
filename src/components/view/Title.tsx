@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import { InputTitle, InputDescription } from '../../util/style';
 const Wrapper = styled.div`
   background-color: white;
   border: 1px solid #d5d7db;
@@ -7,6 +7,7 @@ const Wrapper = styled.div`
   &:focus-within {
     border-color: #377bee;
   }
+  min-width: 700px;
 `;
 
 const Container = styled.div`
@@ -21,30 +22,6 @@ const Header = styled.div`
   border-top-right-radius: 6px;
   height: 10px;
   background-color: #5b35aa;
-`;
-
-const Input = styled.input`
-  border: none;
-  border-bottom: 1px solid #e0e0e0;
-  outline: none;
-  &:focus {
-    border-bottom: 2px solid #5b35aa;
-  }
-  padding: 10px 0;
-  transition: all 300ms ease;
-  &::placeholder {
-    color: #6e7377;
-  }
-`;
-
-const InputTitle = styled(Input)`
-  font-size: 30px;
-  font-weight: 600;
-`;
-
-const InputDescription = styled(Input)`
-  font-size: 20px;
-  font-weight: 400;
 `;
 
 function Title() {
