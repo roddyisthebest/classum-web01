@@ -17,6 +17,7 @@ export interface Question {
   contents: Content[];
   chosenContents: Content[];
   required: boolean;
+  text: string;
 }
 
 const { actions, reducer } = createSlice({
@@ -41,6 +42,7 @@ const { actions, reducer } = createSlice({
           },
         ],
         chosenContents: [],
+        text: '',
       },
     ],
   } as Asking,
@@ -177,6 +179,7 @@ const { actions, reducer } = createSlice({
             ],
             required: false,
             chosenContents: [],
+            text: '',
           },
         ],
       };
