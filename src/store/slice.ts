@@ -14,6 +14,7 @@ export interface Question {
   title: string;
   type: Type | null;
   contents: Content[];
+  required: boolean;
 }
 
 export interface InitialState {
@@ -29,6 +30,7 @@ const { actions, reducer } = createSlice({
     description: '',
     questions: [
       {
+        required: false,
         questionIdx: 0,
         title: '',
         type: {
@@ -62,6 +64,15 @@ const { actions, reducer } = createSlice({
         type: payload.type,
       });
 
+      return { ...state, questions };
+    },
+    setRequired(state, { payload }: PayloadAction<{ questionIndex: number }>) {
+      const questions = [...state.questions];
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        required: !questions[payload.questionIndex].required,
+      });
       return { ...state, questions };
     },
     setQuestionTitle(
@@ -175,6 +186,7 @@ const { actions, reducer } = createSlice({
                 text: '옵션 1',
               },
             ],
+            required: false,
           },
         ],
       };
@@ -214,6 +226,7 @@ export const {
   deleteQuestion,
   copyQuestion,
   setQuestionTitle,
+  setRequired,
 } = actions;
 
 export default reducer;

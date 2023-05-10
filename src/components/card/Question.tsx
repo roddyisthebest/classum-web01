@@ -8,7 +8,11 @@ import {
   RiDeleteBin6Line,
 } from 'react-icons/ri';
 import { TiDeleteOutline } from 'react-icons/ti';
-import { MdContentCopy } from 'react-icons/md';
+import {
+  MdContentCopy,
+  MdCheckBox,
+  MdCheckBoxOutlineBlank,
+} from 'react-icons/md';
 import {
   Question as QuestionType,
   addContent,
@@ -16,6 +20,7 @@ import {
   deleteContent,
   deleteQuestion,
   setQuestionTitle,
+  setRequired,
   setType,
   updateContent,
 } from '../../store/slice';
@@ -147,6 +152,33 @@ const NoodButton = styled.button`
   font-weight: 500;
   padding: 0;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const UpdateButton = styled(NoodButton)`
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  transition: all 150ms ease;
+  &:hover {
+    background-color: #d5d7db;
+  }
+`;
+
+const RequiredButton = styled.button`
+  border: none;
+  background-color: transparent;
+  color: black;
+  font-size: 14px;
+  font-weight: 600;
+  padding-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 7.5px;
 `;
 
 const UpdateSection = styled.div`
@@ -155,7 +187,7 @@ const UpdateSection = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 0 15px;
+  gap: 0 5px;
 `;
 
 function Question({ data, index }: { data: QuestionType; index: number }) {
@@ -163,11 +195,6 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     typeIdx: number;
     englishName: string;
     koreanName: string;
-  }
-
-  interface Content {
-    idx: number;
-    text: string;
   }
 
   const dispatch = useDispatch();
@@ -180,26 +207,16 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     { typeIdx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
   ];
 
-  const [chosenType, setChosenType] = useState<Type>({
-    typeIdx: 3,
-    englishName: 'multiple choice',
-    koreanName: '객관식',
-  });
-
-  const [contents, setContents] = useState<Content[]>([
-    { idx: 1, text: '옵션1' },
-  ]);
-
   const [visibility, setVisibility] = useState<boolean>(false);
 
   const onClickBox = useCallback(() => {
     setVisibility((prev) => !prev);
   }, []);
 
-  const onClickItem = useCallback((type: Type) => {
+  const onClickItem = (type: Type) => {
     dispatch(setType({ type, questionIndex: index }));
     setVisibility(false);
-  }, []);
+  };
 
   const onClickDeleteQsBtn = () => {
     dispatch(deleteQuestion({ questionIdx: data.questionIdx }));
@@ -229,15 +246,6 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     );
   };
 
-  const check = {
-    isItTextType: () => data.type?.typeIdx === 1 || data.type?.typeIdx === 2,
-    isItMultipleType: () => data.type?.typeIdx === 3,
-    isItCheckBoxType: () => data.type?.typeIdx === 4,
-    isItDropdownType: () => data.type?.typeIdx === 5,
-    isThereOneContent: () => data.contents.length === 1,
-    isItLastElement: (index: number) => index === data.contents.length - 1,
-  };
-
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setQuestionTitle({
@@ -245,6 +253,19 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
         text: e.target.value,
       })
     );
+  };
+
+  const onToggleRequiredBtn = () => {
+    dispatch(setRequired({ questionIndex: index }));
+  };
+
+  const check = {
+    isItTextType: () => data.type?.typeIdx === 1 || data.type?.typeIdx === 2,
+    isItMultipleType: () => data.type?.typeIdx === 3,
+    isItCheckBoxType: () => data.type?.typeIdx === 4,
+    isItDropdownType: () => data.type?.typeIdx === 5,
+    isThereOneContent: () => data.contents.length === 1,
+    isItLastElement: (index: number) => index === data.contents.length - 1,
   };
 
   return (
@@ -335,12 +356,20 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
         )}
       </ContentSection>
       <UpdateSection>
-        <NoodButton onClick={onClickCopyQsBtn}>
+        <UpdateButton onClick={onClickCopyQsBtn}>
           <MdContentCopy></MdContentCopy>
-        </NoodButton>
-        <NoodButton onClick={onClickDeleteQsBtn}>
+        </UpdateButton>
+        <UpdateButton onClick={onClickDeleteQsBtn}>
           <RiDeleteBin6Line></RiDeleteBin6Line>
-        </NoodButton>
+        </UpdateButton>
+        <RequiredButton onClick={onToggleRequiredBtn}>
+          {data.required ? (
+            <MdCheckBox fontSize={18}></MdCheckBox>
+          ) : (
+            <MdCheckBoxOutlineBlank fontSize={18}></MdCheckBoxOutlineBlank>
+          )}
+          필수
+        </RequiredButton>
       </UpdateSection>
     </Container>
   );
