@@ -9,7 +9,7 @@ interface Content {
   text: string;
 }
 
-interface Question {
+export interface Question {
   questionIdx: number;
   type: Type | null;
   contents: Content[];
@@ -127,6 +127,24 @@ const { actions, reducer } = createSlice({
         questions,
       };
     },
+    addQuestion(state) {
+      return {
+        ...state,
+        questions: [
+          ...state.questions,
+          {
+            questionIdx:
+              state.questions[state.questions.length - 1].questionIdx + 1,
+            type: {
+              typeIdx: 3,
+              englishName: 'multiple choice',
+              koreanName: '객관식',
+            },
+            contents: [],
+          },
+        ],
+      };
+    },
   },
 });
 
@@ -137,6 +155,7 @@ export const {
   addContent,
   deleteContent,
   updateContent,
+  addQuestion,
 } = actions;
 
 export default reducer;

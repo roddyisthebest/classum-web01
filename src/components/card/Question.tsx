@@ -8,6 +8,7 @@ import {
 } from 'react-icons/ri';
 
 import { TiDeleteOutline } from 'react-icons/ti';
+import { Question as QuestionType } from '../../store/slice';
 
 const Container = styled.div`
   background-color: white;
@@ -16,7 +17,7 @@ const Container = styled.div`
   &:focus-within {
     border-color: #377bee;
   }
-  min-width: 640px;
+  min-width: 400px;
   padding: 30px;
   display: flex;
   gap: 15px 0;
@@ -137,7 +138,7 @@ const NoodButton = styled.button`
   cursor: pointer;
 `;
 
-function Question() {
+function Question({ data }: { data: QuestionType }) {
   interface Type {
     idx: number;
     englishName: string;
@@ -218,11 +219,7 @@ function Question() {
 
         <SelectList visibility={visibility}>
           {types.map((type) => (
-            <SelectItem
-              key={type.idx}
-              onClick={() => onClickItem(type)}
-              isChecked={type.idx === chosenType.idx}
-            >
+            <SelectItem key={type.idx} isChecked={false}>
               {type.koreanName}
             </SelectItem>
           ))}

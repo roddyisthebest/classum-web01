@@ -4,7 +4,7 @@ import Question from './components/card/Question';
 import styled from 'styled-components';
 import { Provider } from 'react-redux';
 import store from './store';
-
+import Root from './navigation/Root';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -24,12 +24,9 @@ const QuestionList = styled.div`
 function App() {
   return (
     <Provider store={store}>
-      <Container className="App">
-        <Title></Title>
-        <QuestionList>
-          <Question></Question>
-        </QuestionList>
-      </Container>
+      <div className="App">
+        <Root></Root>
+      </div>
     </Provider>
   );
 }

@@ -10,7 +10,8 @@ const Wrapper = styled.div`
   &:focus-within {
     border-color: #377bee;
   }
-  min-width: 700px;
+  min-width: 460px;
+  position: relative;
 `;
 
 const Container = styled.div`
