@@ -211,14 +211,6 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
 
   const onClickAddBtn = () => {
     dispatch(addContent({ questionIndex: index }));
-
-    // setContents((prev) => [
-    //   ...prev,
-    //   {
-    //     idx: contents[contents.length - 1].idx + 1,
-    //     text: `옵션 ${contents.length + 1}`,
-    //   },
-    // ]);
   };
 
   const onChangeCtInput = (contentIndex: number, text: string) => {

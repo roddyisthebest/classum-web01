@@ -172,7 +172,7 @@ const { actions, reducer } = createSlice({
             contents: [
               {
                 contentIdx: 0,
-                text: '옵션1',
+                text: '옵션 1',
               },
             ],
           },
@@ -194,7 +194,8 @@ const { actions, reducer } = createSlice({
           ...state.questions,
           {
             ...state.questions[payload.questionIndex],
-            questionIdx: state.questions[payload.questionIndex].questionIdx + 1,
+            questionIdx:
+              state.questions[state.questions.length - 1].questionIdx + 1,
           },
         ],
       };
