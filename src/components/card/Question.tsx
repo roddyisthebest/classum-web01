@@ -23,7 +23,7 @@ import {
   setRequired,
   setType,
   updateContent,
-} from '../../store/slice';
+} from '../../store/asking';
 import { useDispatch } from 'react-redux';
 
 const Container = styled.div`

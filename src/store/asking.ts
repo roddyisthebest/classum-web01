@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Asking } from '.';
 interface Type {
   typeIdx: number;
   englishName: string;
@@ -14,17 +15,12 @@ export interface Question {
   title: string;
   type: Type | null;
   contents: Content[];
+  chosenContents: Content[];
   required: boolean;
 }
 
-export interface InitialState {
-  title: string;
-  description: string;
-  questions: Question[];
-}
-
 const { actions, reducer } = createSlice({
-  name: 'store',
+  name: 'asking',
   initialState: {
     title: '',
     description: '',
@@ -44,9 +40,10 @@ const { actions, reducer } = createSlice({
             text: '옵션1',
           },
         ],
+        chosenContents: [],
       },
     ],
-  } as InitialState,
+  } as Asking,
   reducers: {
     setTitle(state, { payload }: PayloadAction<{ text: string }>) {
       return { ...state, title: payload.text };
@@ -179,6 +176,7 @@ const { actions, reducer } = createSlice({
               },
             ],
             required: false,
+            chosenContents: [],
           },
         ],
       };

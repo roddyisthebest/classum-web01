@@ -3,7 +3,9 @@ import Title from '../components/view/Title';
 import Question from '../components/card/Question';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { InitialState, addQuestion } from '../store/slice';
+import { addQuestion } from '../store/asking';
+import { AiFillEye } from 'react-icons/ai';
+import { InitialState } from '../store';
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -32,9 +34,27 @@ const AddButton = styled.button`
   cursor: pointer;
 `;
 
+const PreviewButton = styled.button`
+  min-width: 460px;
+  height: 50px;
+  border-radius: 8px;
+  border: 1px solid #5b35aa;
+  color: #5b35aa;
+  background-color: white;
+  font-weight: 600;
+  font-size: 17.5px;
+  display: flex;
+  justify-content: center;
+  gap: 0 10px;
+  align-items: center;
+  cursor: pointer;
+`;
+
 function Root() {
   const dispatch = useDispatch();
-  const questions = useSelector((state: InitialState) => state.questions);
+  const questions = useSelector(
+    (state: InitialState) => state.asking.questions
+  );
 
   const onClickAddBtn = () => {
     dispatch(addQuestion());
@@ -52,6 +72,9 @@ function Root() {
           ></Question>
         ))}
         <AddButton onClick={onClickAddBtn}>질문 추가</AddButton>
+        <PreviewButton>
+          <AiFillEye></AiFillEye>미리보기
+        </PreviewButton>
       </QuestionList>
     </Container>
   );

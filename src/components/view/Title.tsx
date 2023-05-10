@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { InputTitle, InputDescription } from '../../util/style';
 import { useDispatch, useSelector } from 'react-redux';
-import { InitialState, setDescription, setTitle } from '../../store/slice';
+import { setDescription, setTitle } from '../../store/asking';
+import { InitialState } from '../../store';
 
 const Wrapper = styled.div`
   background-color: white;
@@ -30,8 +31,10 @@ const Header = styled.div`
 
 function Title() {
   const dispatch = useDispatch();
-  const title = useSelector((state: InitialState) => state.title);
-  const description = useSelector((state: InitialState) => state.description);
+  const title = useSelector((state: InitialState) => state.asking.title);
+  const description = useSelector(
+    (state: InitialState) => state.asking.description
+  );
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setTitle({ text: e.target.value }));
   };
