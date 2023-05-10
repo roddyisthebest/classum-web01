@@ -31,7 +31,7 @@ const { actions, reducer } = createSlice({
     questions: [
       {
         required: false,
-        questionIdx: 0,
+        questionIdx: Math.random() * 10000000,
         title: '',
         type: {
           typeIdx: 3,
@@ -140,8 +140,6 @@ const { actions, reducer } = createSlice({
         text: string;
       }>
     ) {
-      console.log(payload.contentIndex, 'contentIndex');
-      console.log(payload.questionIndex, 'questionIndex');
       const questions = [...state.questions];
 
       const contents = [...state.questions[payload.questionIndex].contents];
@@ -151,14 +149,11 @@ const { actions, reducer } = createSlice({
         text: payload.text,
       });
 
-      console.log(contents, 'contents');
-
       questions.splice(payload.questionIndex, 1, {
         ...questions[payload.questionIndex],
         contents,
       });
 
-      console.log(questions, 'questions');
       return {
         ...state,
         questions,
@@ -171,10 +166,7 @@ const { actions, reducer } = createSlice({
           ...state.questions,
           {
             title: '',
-            questionIdx:
-              state.questions.length === 0
-                ? 0
-                : state.questions[state.questions.length - 1].questionIdx + 1,
+            questionIdx: Math.random() * 10000000,
             type: {
               typeIdx: 3,
               englishName: 'multiple choice',
@@ -200,16 +192,15 @@ const { actions, reducer } = createSlice({
       };
     },
     copyQuestion(state, { payload }: PayloadAction<{ questionIndex: number }>) {
+      const questions = [...state.questions];
+      questions.splice(payload.questionIndex + 1, 0, {
+        ...state.questions[payload.questionIndex],
+        questionIdx: Math.random() * 10000000,
+      });
+
       return {
         ...state,
-        questions: [
-          ...state.questions,
-          {
-            ...state.questions[payload.questionIndex],
-            questionIdx:
-              state.questions[state.questions.length - 1].questionIdx + 1,
-          },
-        ],
+        questions,
       };
     },
   },

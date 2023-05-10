@@ -240,16 +240,14 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     );
   };
 
-  const onClickDeleteCtBtn = (idx: number) => {
-    dispatch(
-      deleteContent({ contentIdx: idx, questionIndex: data.questionIdx })
-    );
+  const onClickDeleteCtBtn = (contentIdx: number) => {
+    dispatch(deleteContent({ contentIdx, questionIndex: index }));
   };
 
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setQuestionTitle({
-        questionIndex: data.questionIdx,
+        questionIndex: index,
         text: e.target.value,
       })
     );
