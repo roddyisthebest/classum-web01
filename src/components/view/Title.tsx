@@ -29,8 +29,8 @@ const Header = styled.div`
 
 function Title() {
   const dispatch = useDispatch();
-  const question = useSelector((state: InitialState) => state.question);
-
+  const title = useSelector((state: InitialState) => state.title);
+  const description = useSelector((state: InitialState) => state.description);
   const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setTitle({ text: e.target.value }));
   };
@@ -46,12 +46,12 @@ function Title() {
         <InputTitle
           placeholder="설문지 제목"
           onChange={onChangeTitle}
-          value={question.title}
+          value={title}
         ></InputTitle>
         <InputDescription
           placeholder="설문지 설명"
           onChange={onChangeDescription}
-          value={question.description}
+          value={description}
         ></InputDescription>
       </Container>
     </Wrapper>

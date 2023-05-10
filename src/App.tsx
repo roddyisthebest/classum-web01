@@ -13,12 +13,22 @@ const Container = styled.div`
   gap: 15px 0;
 `;
 
+const QuestionList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  gap: 15px 0;
+`;
+
 function App() {
   return (
     <Provider store={store}>
       <Container className="App">
         <Title></Title>
-        <Question></Question>
+        <QuestionList>
+          <Question></Question>
+        </QuestionList>
       </Container>
     </Provider>
   );

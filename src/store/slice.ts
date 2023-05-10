@@ -1,83 +1,130 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface Type {
-  idx: number;
+  typeIdx: number;
   englishName: string;
   koreanName: string;
 }
 interface Content {
-  idx: number;
+  contentIdx: number;
   text: string;
 }
 
+interface Question {
+  questionIdx: number;
+  type: Type | null;
+  contents: Content[];
+}
+
 export interface InitialState {
-  question: {
-    title: string;
-    description: string;
-    type: Type | null;
-    contents: Content[];
-  };
+  title: string;
+  description: string;
+  questions: Question[];
 }
 
 const { actions, reducer } = createSlice({
   name: 'store',
   initialState: {
-    question: {
-      title: '',
-      description: '',
-      type: null,
-      contents: [],
-    },
+    title: '',
+    description: '',
+    questions: [
+      {
+        questionIdx: 0,
+        type: {
+          typeIdx: 3,
+          englishName: 'multiple choice',
+          koreanName: '객관식',
+        },
+        contents: [],
+      },
+    ],
   } as InitialState,
   reducers: {
     setTitle(state, { payload }: PayloadAction<{ text: string }>) {
-      return { question: { ...state.question, title: payload.text } };
+      return { ...state, title: payload.text };
     },
     setDescription(state, { payload }: PayloadAction<{ text: string }>) {
-      return { question: { ...state.question, description: payload.text } };
+      return { ...state, description: payload.text };
     },
-    setType(state, { payload }: PayloadAction<{ type: Type }>) {
-      return { question: { ...state.question, type: payload.type } };
+    setType(
+      state,
+      { payload }: PayloadAction<{ type: Type; questionIndex: number }>
+    ) {
+      const questions = [...state.questions];
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        type: payload.type,
+      });
+
+      return { ...state, questions };
     },
-    addContent(state) {
+    addContent(state, { payload }: PayloadAction<{ questionIndex: number }>) {
+      const questions = [...state.questions];
+
+      const contents = state.questions[payload.questionIndex].contents;
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        contents: [
+          ...contents,
+          {
+            contentIdx: contents[contents.length - 1].contentIdx + 1,
+            text: `옵션 ${contents.length + 1}`,
+          },
+        ],
+      });
+
       return {
-        question: {
-          ...state.question,
-          contents: [
-            ...state.question.contents,
-            {
-              idx:
-                state.question.contents[state.question.contents.length - 1]
-                  .idx + 1,
-              text: `옵션 ${state.question.contents.length + 1}`,
-            },
-          ],
-        },
+        ...state,
+        questions,
       };
     },
-    deleteContent(state, { payload }: PayloadAction<{ idx: number }>) {
+    deleteContent(
+      state,
+      { payload }: PayloadAction<{ contentIdx: number; questionIndex: number }>
+    ) {
+      const questions = [...state.questions];
+      let contents = state.questions[payload.questionIndex].contents;
+
+      contents = contents.filter(
+        (content) => content.contentIdx !== payload.contentIdx
+      );
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        contents,
+      });
+
       return {
-        question: {
-          ...state.question,
-          contents: state.question.contents.filter(
-            (content) => content.idx !== payload.idx
-          ),
-        },
+        ...state,
+        questions,
       };
     },
     updateContent(
       state,
-      { payload }: PayloadAction<{ index: number; text: string }>
+      {
+        payload,
+      }: PayloadAction<{
+        contentIndex: number;
+        questionIndex: number;
+        text: string;
+      }>
     ) {
-      const contents = [...state.question.contents];
-      contents.splice(payload.index, 1, {
-        ...contents[payload.index],
+      const questions = [...state.questions];
+
+      let contents = state.questions[payload.questionIndex].contents;
+
+      contents.splice(payload.contentIndex, 1, {
+        ...contents[payload.contentIndex],
         text: payload.text,
       });
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        contents,
+      });
       return {
-        question: {
-          ...state.question,
-          contents,
-        },
+        ...state,
+        questions,
       };
     },
   },
