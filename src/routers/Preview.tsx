@@ -1,12 +1,9 @@
-import React from 'react';
-import Title from '../components/view/Title';
 import styled from 'styled-components';
+import Title from '../components/view/Title';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion } from '../store/asking';
-import { AiFillEye } from 'react-icons/ai';
 import { InitialState } from '../store';
-import { Link } from 'react-router-dom';
-import EditableQs from '../components/card/EditableQs';
+import SubmittableQs from '../components/card/SubmittableQs';
+import { resetChosenContent } from '../store/asking';
 
 const Container = styled.div`
   display: flex;
@@ -24,8 +21,16 @@ const QuestionList = styled.div`
   gap: 15px 0;
 `;
 
+const ButtonList = styled.div`
+  display: flex;
+  height: 70px;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
 const AddButton = styled.button`
-  min-width: 460px;
+  min-width: 30%;
   height: 50px;
   border-radius: 8px;
   background-color: #5b35aa;
@@ -36,51 +41,50 @@ const AddButton = styled.button`
   cursor: pointer;
 `;
 
-const PreviewButton = styled(Link)`
-  min-width: 460px;
+const ResetButton = styled.button`
+  min-width: 30%;
   height: 50px;
-  border-radius: 8px;
-  border: 1px solid #5b35aa;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   color: #5b35aa;
-  background-color: white;
   font-weight: 600;
   font-size: 17.5px;
-  display: flex;
-  justify-content: center;
-  gap: 0 10px;
-  align-items: center;
   cursor: pointer;
-  text-decoration: none;
 `;
 
-function Home() {
+function Preview() {
   const dispatch = useDispatch();
   const questions = useSelector(
     (state: InitialState) => state.asking.questions
   );
 
-  const onClickAddBtn = () => {
-    dispatch(addQuestion());
+  const handleReset = () => {
+    // eslint-disable-next-line no-restricted-globals
+    if (confirm('양식을 지우시겠습니까?')) {
+      dispatch(resetChosenContent());
+    }
   };
-
   return (
     <Container>
-      <Title readOnly={false}></Title>
+      <Title readOnly={true}></Title>
       <QuestionList>
         {questions.map((question, index) => (
-          <EditableQs
+          <SubmittableQs
             data={question}
             key={question.questionIdx}
             index={index}
-          ></EditableQs>
+          ></SubmittableQs>
         ))}
-        <AddButton onClick={onClickAddBtn}>질문 추가</AddButton>
-        <PreviewButton to="/preview">
-          <AiFillEye></AiFillEye>미리보기
-        </PreviewButton>
+        <ButtonList>
+          <AddButton>제출하기</AddButton>
+          <ResetButton onClick={handleReset}>양식 지우기</ResetButton>
+        </ButtonList>
       </QuestionList>
     </Container>
   );
 }
 
-export default Home;
+export default Preview;

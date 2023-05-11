@@ -5,7 +5,7 @@ interface Type {
   englishName: string;
   koreanName: string;
 }
-interface Content {
+export interface Content {
   contentIdx: number;
   text: string;
 }
@@ -204,6 +204,84 @@ const { actions, reducer } = createSlice({
         questions,
       };
     },
+    setChosenContent(
+      state,
+      {
+        payload,
+      }: PayloadAction<{
+        questionIndex: number;
+        data: Content | null;
+        type: 'multiple choice' | 'check box' | 'dropdown' | 'reset';
+      }>
+    ) {
+      const questions = [...state.questions];
+      let chosenContents = [
+        ...state.questions[payload.questionIndex].chosenContents,
+      ];
+      if (payload.type === 'multiple choice') {
+        if (
+          chosenContents.some(
+            (chosenContent) =>
+              chosenContent.contentIdx === payload.data?.contentIdx
+          )
+        ) {
+          chosenContents = chosenContents.filter(
+            (chosenContent) =>
+              chosenContent.contentIdx !== payload.data?.contentIdx
+          );
+        } else {
+          chosenContents = [payload.data as Content];
+        }
+
+        questions.splice(payload.questionIndex, 1, {
+          ...questions[payload.questionIndex],
+          chosenContents,
+        });
+      } else if (payload.type === 'check box') {
+        if (
+          chosenContents.some(
+            (chosenContent) =>
+              chosenContent.contentIdx === payload.data?.contentIdx
+          )
+        ) {
+          chosenContents = chosenContents.filter(
+            (chosenContent) =>
+              chosenContent.contentIdx !== payload.data?.contentIdx
+          );
+        } else {
+          chosenContents.push(payload.data as Content);
+        }
+
+        questions.splice(payload.questionIndex, 1, {
+          ...questions[payload.questionIndex],
+          chosenContents,
+        });
+      } else if (payload.type === 'dropdown') {
+        chosenContents = [payload.data as Content];
+        questions.splice(payload.questionIndex, 1, {
+          ...questions[payload.questionIndex],
+          chosenContents,
+        });
+      } else if (payload.type === 'reset') {
+        questions.splice(payload.questionIndex, 1, {
+          ...questions[payload.questionIndex],
+          chosenContents: [],
+        });
+      }
+
+      return { ...state, questions };
+    },
+    resetChosenContent(state) {
+      const questions = [...state.questions];
+
+      const newQuestions: Question[] = [];
+
+      questions.map((question) =>
+        newQuestions.push({ ...question, chosenContents: [] })
+      );
+
+      return { ...state, questions: newQuestions };
+    },
   },
 });
 
@@ -219,6 +297,8 @@ export const {
   copyQuestion,
   setQuestionTitle,
   setRequired,
+  setChosenContent,
+  resetChosenContent,
 } = actions;
 
 export default reducer;

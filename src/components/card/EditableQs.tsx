@@ -190,7 +190,7 @@ const UpdateSection = styled.div`
   gap: 0 5px;
 `;
 
-function Question({ data, index }: { data: QuestionType; index: number }) {
+function EditableQs({ data, index }: { data: QuestionType; index: number }) {
   interface Type {
     typeIdx: number;
     englishName: string;
@@ -203,7 +203,7 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
     { typeIdx: 1, englishName: 'short sentence', koreanName: '단답형' },
     { typeIdx: 2, englishName: 'long sentence', koreanName: '장문형' },
     { typeIdx: 3, englishName: 'multiple choice', koreanName: '객관식' },
-    { typeIdx: 4, englishName: 'checkBox', koreanName: '체크박스' },
+    { typeIdx: 4, englishName: 'check box', koreanName: '체크박스' },
     { typeIdx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
   ];
 
@@ -373,4 +373,4 @@ function Question({ data, index }: { data: QuestionType; index: number }) {
   );
 }
 
-export default memo(Question);
+export default memo(EditableQs);

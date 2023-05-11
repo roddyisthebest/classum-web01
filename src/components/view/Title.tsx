@@ -29,7 +29,20 @@ const Header = styled.div`
   background-color: #5b35aa;
 `;
 
-function Title() {
+const ModifiedInput = styled(InputTitle)`
+  &:focus {
+    border-bottom: 1px solid #e0e0e0;
+  }
+  cursor: default;
+`;
+
+const CautionColumn = styled.div`
+  font-size: 13px;
+  color: red;
+  font-weight: 500;
+`;
+
+function Title({ readOnly }: { readOnly: boolean }) {
   const dispatch = useDispatch();
   const title = useSelector((state: InitialState) => state.asking.title);
   const description = useSelector(
@@ -47,16 +60,25 @@ function Title() {
     <Wrapper>
       <Header></Header>
       <Container>
-        <InputTitle
+        <ModifiedInput
+          readOnly={readOnly}
           placeholder="설문지 제목"
           onChange={onChangeTitle}
-          value={title}
-        ></InputTitle>
-        <InputDescription
-          placeholder="설문지 설명"
-          onChange={onChangeDescription}
-          value={description}
-        ></InputDescription>
+          value={readOnly && title.length === 0 ? '제목없는 설문지' : title}
+        ></ModifiedInput>
+        {readOnly && description.length !== 0 && (
+          <InputDescription
+            readOnly={readOnly}
+            placeholder="설문지 설명"
+            onChange={onChangeDescription}
+            value={description}
+          ></InputDescription>
+        )}
+        {readOnly && (
+          <CautionColumn>
+            <strong>*</strong> 표시는 필수 질문임
+          </CautionColumn>
+        )}
       </Container>
     </Wrapper>
   );

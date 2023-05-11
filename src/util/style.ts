@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import TextareaAutosize from 'react-textarea-autosize';
 
 const Input = styled.input`
   border: none;
@@ -24,4 +25,19 @@ const InputDescription = styled(Input)`
   font-weight: 400;
 `;
 
-export { InputTitle, InputDescription };
+const TextArea = styled(TextareaAutosize)`
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  outline: none;
+  &:focus {
+    border-bottom: 2px solid #5b35aa;
+  }
+  padding: 10px 0;
+  transition: all 300ms ease;
+  &::placeholder {
+    color: #6e7377;
+  }
+  resize: none;
+`;
+
+export { InputTitle, InputDescription, TextArea };
