@@ -7,22 +7,23 @@ import {
   RiCheckboxBlankFill,
   RiCheckboxBlankCircleFill,
 } from 'react-icons/ri';
-
+import { FiAlertCircle } from 'react-icons/fi';
 import {
   Question as QuestionType,
   setChosenContent,
   setQuestionText,
+  setSubmittable,
 } from '../../store/asking';
 import { useDispatch } from 'react-redux';
 import { Content as ContentType } from '../../store/asking';
 
-const Container = styled.div`
+const Container = styled.div<{ submittable: boolean }>`
   background-color: white;
-  border: 1px solid #d5d7db;
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${(props) => (props.submittable ? '#d5d7db' : 'red')};
   border-radius: 7.5px;
-  &:focus-within {
-    border-color: #377bee;
-  }
+
   width: 400px;
   padding: 30px;
   display: flex;
@@ -133,7 +134,24 @@ const Option = styled.option`
   font-size: 20px;
 `;
 
+const CautionSection = styled.div`
+  color: red;
+  font-weight: 500;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 0 5px;
+`;
+
 function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
+  const [localSubmit, setLocalSubmit] = useState<{
+    first: boolean;
+    value: boolean;
+  }>({
+    first: true,
+    value: false,
+  });
+
   const dispatch = useDispatch();
 
   const check = {
@@ -145,6 +163,7 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
     isItDropdownType: () => data.type?.typeIdx === 5,
     isThereOneContent: () => data.contents.length === 1,
     isItLastElement: (index: number) => index === data.contents.length - 1,
+    isSubmittable: () => localSubmit.first || localSubmit.value,
   };
 
   const onChangeSentence = (
@@ -176,8 +195,37 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
     );
   };
 
+  useEffect(() => {
+    if (!localSubmit.first && data.required) {
+      if (data.text.length === 0 && data.chosenContents.length === 0) {
+        setLocalSubmit({ first: false, value: false });
+        dispatch(setSubmittable({ questionIndex: index, value: false }));
+      } else {
+        setLocalSubmit({ first: false, value: true });
+        dispatch(setSubmittable({ questionIndex: index, value: true }));
+      }
+    }
+
+    if (!data.required) {
+      setLocalSubmit({ first: false, value: true });
+    }
+  }, [
+    data.chosenContents.length,
+    data.required,
+    data.text.length,
+    dispatch,
+    index,
+    localSubmit.first,
+  ]);
+
+  useEffect(() => {
+    if (data.chosenContents.length === 1 || data.text.length === 1) {
+      setLocalSubmit((prev) => ({ ...prev, first: false }));
+    }
+  }, [data.chosenContents, data.text]);
+
   return (
-    <Container>
+    <Container submittable={check.isSubmittable()}>
       {(data.title.length !== 0 || data.required) && (
         <TitleSection>
           <ContentTitle>
@@ -277,7 +325,6 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
                   return onClickResetContentBtn();
                 }
                 const content: ContentType = JSON.parse(e.target.value);
-
                 onClickContentBtn(content, 'dropdown');
               }}
             >
@@ -296,6 +343,11 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
           </>
         )}
       </ContentSection>
+      {!check.isSubmittable() && (
+        <CautionSection>
+          <FiAlertCircle></FiAlertCircle>필수 질문입니다.
+        </CautionSection>
+      )}
     </Container>
   );
 }

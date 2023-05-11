@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   }
   min-width: 460px;
   position: relative;
+  margin-top: 30px;
 `;
 
 const Container = styled.div`

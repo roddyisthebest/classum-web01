@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-import askingReducer, { Question } from './asking';
+import askingReducer, { Question, Content } from './asking';
+import resultReducer, { Data } from './result';
 
 export interface Asking {
   title: string;
@@ -7,12 +8,20 @@ export interface Asking {
   questions: Question[];
 }
 
+export interface Result {
+  title: string;
+  description: string;
+  contents: Data[];
+}
+
 export interface InitialState {
   asking: Asking;
+  result: Result;
 }
 
 export default configureStore({
   reducer: {
     asking: askingReducer,
+    result: resultReducer,
   },
 });

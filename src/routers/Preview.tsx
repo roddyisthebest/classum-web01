@@ -4,13 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { InitialState } from '../store';
 import SubmittableQs from '../components/card/SubmittableQs';
 import { resetChosenContent } from '../store/asking';
+import { useEffect, useState } from 'react';
+import Result from '../components/view/Result';
+import { setResult } from '../store/result';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 30px 0;
+  /* padding: 30px 0; */
   gap: 15px 0;
+  position: relative;
 `;
 
 const QuestionList = styled.div`
@@ -57,9 +61,10 @@ const ResetButton = styled.button`
 
 function Preview() {
   const dispatch = useDispatch();
-  const questions = useSelector(
-    (state: InitialState) => state.asking.questions
-  );
+
+  const [disabled, setDisabled] = useState<boolean>(true);
+  const [visibility, setVisibility] = useState<boolean>(false);
+  const asking = useSelector((state: InitialState) => state.asking);
 
   const handleReset = () => {
     // eslint-disable-next-line no-restricted-globals
@@ -67,23 +72,57 @@ function Preview() {
       dispatch(resetChosenContent());
     }
   };
+
+  const handleSubmit = () => {
+    setVisibility(true);
+    dispatch(
+      setResult({
+        title: asking.title,
+        description: asking.description,
+        data: asking.questions,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (asking.questions.some((question) => !question.submittable)) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [asking.questions]);
+
+  useEffect(() => {
+    if (visibility) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [visibility]);
+
   return (
-    <Container>
-      <Title readOnly={true}></Title>
-      <QuestionList>
-        {questions.map((question, index) => (
-          <SubmittableQs
-            data={question}
-            key={question.questionIdx}
-            index={index}
-          ></SubmittableQs>
-        ))}
-        <ButtonList>
-          <AddButton>제출하기</AddButton>
-          <ResetButton onClick={handleReset}>양식 지우기</ResetButton>
-        </ButtonList>
-      </QuestionList>
-    </Container>
+    <>
+      <Container>
+        {visibility && <Result setVisibility={setVisibility}></Result>}
+
+        <Title readOnly={true}></Title>
+        <QuestionList>
+          {asking.questions.map((question, index) => (
+            <SubmittableQs
+              data={question}
+              key={question.questionIdx}
+              index={index}
+            ></SubmittableQs>
+          ))}
+          <ButtonList>
+            <AddButton disabled={disabled} onClick={handleSubmit}>
+              제출하기
+            </AddButton>
+            <ResetButton onClick={handleReset}>양식 지우기</ResetButton>
+          </ButtonList>
+        </QuestionList>
+      </Container>
+    </>
   );
 }
 

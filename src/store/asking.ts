@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Asking } from '.';
-interface Type {
+export interface Type {
   typeIdx: number;
   englishName: string;
   koreanName: string;
@@ -17,11 +17,8 @@ export interface Question {
   contents: Content[];
   chosenContents: Content[];
   required: boolean;
+  submittable: boolean;
   text: string;
-  submittable: {
-    first: boolean;
-    value: boolean;
-  };
 }
 
 const { actions, reducer } = createSlice({
@@ -32,6 +29,7 @@ const { actions, reducer } = createSlice({
     questions: [
       {
         required: false,
+        submittable: true,
         questionIdx: Math.random() * 10000000,
         title: '',
         type: {
@@ -42,15 +40,11 @@ const { actions, reducer } = createSlice({
         contents: [
           {
             contentIdx: 0,
-            text: '옵션1',
+            text: '옵션 1',
           },
         ],
         chosenContents: [],
         text: '',
-        submittable: {
-          first: false,
-          value: false,
-        },
       },
     ],
   } as Asking,
@@ -79,7 +73,21 @@ const { actions, reducer } = createSlice({
       questions.splice(payload.questionIndex, 1, {
         ...questions[payload.questionIndex],
         required: !questions[payload.questionIndex].required,
+        submittable: questions[payload.questionIndex].required,
       });
+
+      return { ...state, questions };
+    },
+    setSubmittable(
+      state,
+      { payload }: PayloadAction<{ questionIndex: number; value: boolean }>
+    ) {
+      const questions = [...state.questions];
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        submittable: payload.value,
+      });
+
       return { ...state, questions };
     },
     setQuestionTitle(
@@ -199,12 +207,9 @@ const { actions, reducer } = createSlice({
               },
             ],
             required: false,
+            submittable: true,
             chosenContents: [],
             text: '',
-            submittable: {
-              first: false,
-              value: false,
-            },
           },
         ],
       };
@@ -229,7 +234,6 @@ const { actions, reducer } = createSlice({
         questions,
       };
     },
-
     setChosenContent(
       state,
       {
@@ -308,6 +312,33 @@ const { actions, reducer } = createSlice({
 
       return { ...state, questions: newQuestions };
     },
+    resetState() {
+      return {
+        title: '',
+        description: '',
+        questions: [
+          {
+            required: false,
+            submittable: true,
+            questionIdx: Math.random() * 10000000,
+            title: '',
+            type: {
+              typeIdx: 3,
+              englishName: 'multiple choice',
+              koreanName: '객관식',
+            },
+            contents: [
+              {
+                contentIdx: 0,
+                text: '옵션 1',
+              },
+            ],
+            chosenContents: [],
+            text: '',
+          },
+        ],
+      };
+    },
   },
 });
 
@@ -324,8 +355,10 @@ export const {
   setQuestionTitle,
   setQuestionText,
   setRequired,
+  setSubmittable,
   setChosenContent,
   resetChosenContent,
+  resetState,
 } = actions;
 
 export default reducer;
