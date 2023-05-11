@@ -29,13 +29,15 @@ const Header = styled.div`
   background-color: #5b35aa;
 `;
 
-const ModifiedInput = styled(InputTitle)`
-  &:focus {
-    border-bottom: 1px solid #e0e0e0;
-  }
-  cursor: default;
+const ModifiedInputTitle = styled(InputTitle)<{ editable: boolean }>`
+  cursor: ${(props) => props.editable && 'default'};
 `;
 
+const ModifiedInputDescription = styled(InputDescription)<{
+  editable: boolean;
+}>`
+  cursor: ${(props) => props.editable && 'default'};
+`;
 const CautionColumn = styled.div`
   font-size: 13px;
   color: red;
@@ -60,20 +62,22 @@ function Title({ readOnly }: { readOnly: boolean }) {
     <Wrapper>
       <Header></Header>
       <Container>
-        <ModifiedInput
+        <ModifiedInputTitle
           readOnly={readOnly}
+          editable={readOnly}
           placeholder="설문지 제목"
           onChange={onChangeTitle}
           value={readOnly && title.length === 0 ? '제목없는 설문지' : title}
-        ></ModifiedInput>
-        {readOnly && description.length !== 0 && (
-          <InputDescription
-            readOnly={readOnly}
-            placeholder="설문지 설명"
-            onChange={onChangeDescription}
-            value={description}
-          ></InputDescription>
-        )}
+        ></ModifiedInputTitle>
+        <ModifiedInputDescription
+          readOnly={readOnly}
+          editable={readOnly}
+          placeholder="설문지 설명"
+          onChange={onChangeDescription}
+          value={
+            readOnly && description.length === 0 ? '설명 없음' : description
+          }
+        ></ModifiedInputDescription>
         {readOnly && (
           <CautionColumn>
             <strong>*</strong> 표시는 필수 질문임
