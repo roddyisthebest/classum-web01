@@ -18,6 +18,10 @@ export interface Question {
   chosenContents: Content[];
   required: boolean;
   text: string;
+  submittable: {
+    first: boolean;
+    value: boolean;
+  };
 }
 
 const { actions, reducer } = createSlice({
@@ -43,6 +47,10 @@ const { actions, reducer } = createSlice({
         ],
         chosenContents: [],
         text: '',
+        submittable: {
+          first: false,
+          value: false,
+        },
       },
     ],
   } as Asking,
@@ -193,6 +201,10 @@ const { actions, reducer } = createSlice({
             required: false,
             chosenContents: [],
             text: '',
+            submittable: {
+              first: false,
+              value: false,
+            },
           },
         ],
       };

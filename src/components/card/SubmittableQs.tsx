@@ -281,7 +281,9 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
                 onClickContentBtn(content, 'dropdown');
               }}
             >
-              <Option value="">선택</Option>
+              <Option value="" selected={data.chosenContents.length === 0}>
+                선택
+              </Option>
               {data.contents.map((content) => (
                 <Option
                   value={JSON.stringify(content)}
