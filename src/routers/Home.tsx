@@ -50,7 +50,7 @@ const PreviewButton = styled.button`
   cursor: pointer;
 `;
 
-function Root() {
+function Home() {
   const dispatch = useDispatch();
   const questions = useSelector(
     (state: InitialState) => state.asking.questions
@@ -80,4 +80,4 @@ function Root() {
   );
 }
 
-export default Root;
+export default Home;
