@@ -8,7 +8,11 @@ import {
   RiCheckboxBlankCircleFill,
 } from 'react-icons/ri';
 
-import { Question as QuestionType, setChosenContent } from '../../store/asking';
+import {
+  Question as QuestionType,
+  setChosenContent,
+  setQuestionText,
+} from '../../store/asking';
 import { useDispatch } from 'react-redux';
 import { Content as ContentType } from '../../store/asking';
 
@@ -132,8 +136,6 @@ const Option = styled.option`
 function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
   const dispatch = useDispatch();
 
-  const [text, setText] = useState<string>('');
-
   const check = {
     isItShortStType: () => data.type?.typeIdx === 1,
     isItLongStType: () => data.type?.typeIdx === 2,
@@ -143,6 +145,12 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
     isItDropdownType: () => data.type?.typeIdx === 5,
     isThereOneContent: () => data.contents.length === 1,
     isItLastElement: (index: number) => index === data.contents.length - 1,
+  };
+
+  const onChangeSentence = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => {
+    dispatch(setQuestionText({ questionIndex: index, text: e.target.value }));
   };
 
   const onClickContentBtn = (
@@ -168,10 +176,6 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
     );
   };
 
-  useEffect(() => {
-    console.log(text.length);
-  }, [text]);
-
   return (
     <Container>
       {(data.title.length !== 0 || data.required) && (
@@ -184,14 +188,19 @@ function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
       )}
 
       <ContentSection>
-        {check.isItShortStType() && <ShortSt placeholder="내 답변"></ShortSt>}
+        {check.isItShortStType() && (
+          <ShortSt
+            placeholder="내 답변"
+            onChange={onChangeSentence}
+            value={data.text}
+          ></ShortSt>
+        )}
         {check.isItLongStType() && (
           <LongSt
             rows={4}
             placeholder="내 답변"
-            onChange={(e) => {
-              setText(e.target.value);
-            }}
+            onChange={onChangeSentence}
+            value={data.text}
           ></LongSt>
         )}
         {check.isItMultipleType() && (

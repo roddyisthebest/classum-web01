@@ -87,6 +87,19 @@ const { actions, reducer } = createSlice({
 
       return { ...state, questions };
     },
+    setQuestionText(
+      state,
+      { payload }: PayloadAction<{ questionIndex: number; text: string }>
+    ) {
+      const questions = [...state.questions];
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        text: payload.text,
+      });
+
+      return { ...state, questions };
+    },
     addContent(state, { payload }: PayloadAction<{ questionIndex: number }>) {
       const questions = [...state.questions];
 
@@ -204,6 +217,7 @@ const { actions, reducer } = createSlice({
         questions,
       };
     },
+
     setChosenContent(
       state,
       {
@@ -277,7 +291,7 @@ const { actions, reducer } = createSlice({
       const newQuestions: Question[] = [];
 
       questions.map((question) =>
-        newQuestions.push({ ...question, chosenContents: [] })
+        newQuestions.push({ ...question, chosenContents: [], text: '' })
       );
 
       return { ...state, questions: newQuestions };
@@ -296,6 +310,7 @@ export const {
   deleteQuestion,
   copyQuestion,
   setQuestionTitle,
+  setQuestionText,
   setRequired,
   setChosenContent,
   resetChosenContent,
