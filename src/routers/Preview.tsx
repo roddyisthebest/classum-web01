@@ -7,6 +7,7 @@ import { resetChosenContent } from '../store/asking';
 import { useEffect, useState } from 'react';
 import Result from '../components/view/Result';
 import { setResult } from '../store/answer';
+import { setVisibility } from '../store/display';
 
 const Container = styled.div`
   display: flex;
@@ -63,9 +64,11 @@ function Preview() {
   const dispatch = useDispatch();
 
   const [disabled, setDisabled] = useState<boolean>(true);
-  const [visibility, setVisibility] = useState<boolean>(false);
-  const asking = useSelector((state: InitialState) => state.asking);
 
+  const asking = useSelector((state: InitialState) => state.asking);
+  const visibility = useSelector(
+    (state: InitialState) => state.display.visibility.ResultPopup
+  );
   const handleReset = () => {
     // eslint-disable-next-line no-restricted-globals
     if (confirm('양식을 지우시겠습니까?')) {
@@ -74,7 +77,7 @@ function Preview() {
   };
 
   const handleSubmit = () => {
-    setVisibility(true);
+    dispatch(setVisibility({ key: 'ResultPopup', value: true }));
     dispatch(
       setResult({
         title: asking.title,
@@ -103,7 +106,7 @@ function Preview() {
   return (
     <>
       <Container>
-        {visibility && <Result setVisibility={setVisibility}></Result>}
+        {visibility && <Result></Result>}
 
         <Title readOnly={true}></Title>
         <QuestionList>

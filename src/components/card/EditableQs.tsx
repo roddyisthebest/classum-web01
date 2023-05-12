@@ -19,12 +19,16 @@ import {
   copyQuestion,
   deleteContent,
   deleteQuestion,
+  resetCheckBoxVb,
+  setCheckBoxVb,
   setQuestionTitle,
   setRequired,
   setType,
   updateContent,
 } from '../../store/asking';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { InitialState } from '../../store';
+import { setVisibility } from '../../store/display';
 
 const Container = styled.div`
   background-color: white;
@@ -64,9 +68,10 @@ const SelectBox = styled.button`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  z-index: 11;
 `;
 
-const SelectList = styled.div<{ visibility: boolean }>`
+const SelectList = styled.div`
   width: 130px;
   height: 250px;
   position: absolute;
@@ -75,9 +80,10 @@ const SelectList = styled.div<{ visibility: boolean }>`
   z-index: 5;
   background-color: white;
   border-radius: 5px;
-  display: ${(props) => (props.visibility ? 'flex' : 'none')};
+  display: flex;
   flex-direction: column;
   box-shadow: 0 0 10px #00000023;
+  z-index: 12;
 `;
 
 const SelectItem = styled.button<{ isChecked: boolean }>`
@@ -190,6 +196,15 @@ const UpdateSection = styled.div`
   gap: 0 5px;
 `;
 
+const SelectBoxBkg = styled.div`
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+`;
+
 function EditableQs({ data, index }: { data: QuestionType; index: number }) {
   interface Type {
     typeIdx: number;
@@ -207,15 +222,17 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
     { typeIdx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
   ];
 
-  const [visibility, setVisibility] = useState<boolean>(false);
+  //   const visibility = useSelector(
+  //     (state: InitialState) => state.display.visibility.SelectBox
+  //   );
 
-  const onClickBox = useCallback(() => {
-    setVisibility((prev) => !prev);
-  }, []);
+  const onClickBox = () => {
+    dispatch(resetCheckBoxVb());
+    dispatch(setCheckBoxVb({ questionIndex: index, value: true }));
+  };
 
   const onClickItem = (type: Type) => {
     dispatch(setType({ type, questionIndex: index }));
-    setVisibility(false);
   };
 
   const onClickDeleteQsBtn = () => {
@@ -257,6 +274,11 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
     dispatch(setRequired({ questionIndex: index }));
   };
 
+  const onClickSelectBoxBkg = () => {
+    dispatch(resetCheckBoxVb());
+    // dispatch(setVisibility({ key: 'SelectBox', value: false }));
+  };
+
   const check = {
     isItTextType: () => data.type?.typeIdx === 1 || data.type?.typeIdx === 2,
     isItMultipleType: () => data.type?.typeIdx === 3,
@@ -268,6 +290,9 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
 
   return (
     <Container>
+      {data.checkBoxVb && (
+        <SelectBoxBkg onClick={onClickSelectBoxBkg}></SelectBoxBkg>
+      )}
       <TitleSection>
         <ModifiedInputTitle
           placeholder="질문"
@@ -278,18 +303,19 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
           <SelectText>{data.type?.koreanName}</SelectText>
           <RiArrowDownSFill fontSize={20}></RiArrowDownSFill>
         </SelectBox>
-
-        <SelectList visibility={visibility}>
-          {types.map((type) => (
-            <SelectItem
-              key={type.typeIdx}
-              isChecked={type.typeIdx === data.type?.typeIdx}
-              onClick={() => onClickItem(type)}
-            >
-              {type.koreanName}
-            </SelectItem>
-          ))}
-        </SelectList>
+        {data.checkBoxVb && (
+          <SelectList>
+            {types.map((type) => (
+              <SelectItem
+                key={type.typeIdx}
+                isChecked={type.typeIdx === data.type?.typeIdx}
+                onClick={() => onClickItem(type)}
+              >
+                {type.koreanName}
+              </SelectItem>
+            ))}
+          </SelectList>
+        )}
       </TitleSection>
       <ContentSection>
         {check.isItTextType() ? (

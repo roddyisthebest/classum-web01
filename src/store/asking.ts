@@ -19,6 +19,7 @@ export interface Question {
   required: boolean;
   submittable: boolean;
   text: string;
+  checkBoxVb: boolean;
 }
 
 const { actions, reducer } = createSlice({
@@ -45,6 +46,7 @@ const { actions, reducer } = createSlice({
         ],
         chosenContents: [],
         text: '',
+        checkBoxVb: false,
       },
     ],
   } as Asking,
@@ -63,6 +65,7 @@ const { actions, reducer } = createSlice({
       questions.splice(payload.questionIndex, 1, {
         ...questions[payload.questionIndex],
         type: payload.type,
+        checkBoxVb: false,
       });
 
       return { ...state, questions };
@@ -210,6 +213,7 @@ const { actions, reducer } = createSlice({
             submittable: true,
             chosenContents: [],
             text: '',
+            checkBoxVb: false,
           },
         ],
       };
@@ -227,6 +231,7 @@ const { actions, reducer } = createSlice({
       questions.splice(payload.questionIndex + 1, 0, {
         ...state.questions[payload.questionIndex],
         questionIdx: Math.random() * 10000000,
+        checkBoxVb: false,
       });
 
       return {
@@ -335,9 +340,35 @@ const { actions, reducer } = createSlice({
             ],
             chosenContents: [],
             text: '',
+            checkBoxVb: false,
           },
         ],
       };
+    },
+    setCheckBoxVb(
+      state,
+      { payload }: PayloadAction<{ questionIndex: number; value: boolean }>
+    ) {
+      const questions = [...state.questions];
+
+      questions.splice(payload.questionIndex, 1, {
+        ...questions[payload.questionIndex],
+        checkBoxVb: payload.value,
+      });
+
+      return { ...state, questions };
+    },
+    resetCheckBoxVb(state) {
+      const newQuestions: Question[] = [];
+
+      const questions = [...state.questions];
+      questions.map((question) => {
+        newQuestions.push({
+          ...question,
+          checkBoxVb: false,
+        });
+      });
+      return { ...state, questions: newQuestions };
     },
   },
 });
@@ -359,6 +390,8 @@ export const {
   setChosenContent,
   resetChosenContent,
   resetState,
+  setCheckBoxVb,
+  resetCheckBoxVb,
 } = actions;
 
 export default reducer;

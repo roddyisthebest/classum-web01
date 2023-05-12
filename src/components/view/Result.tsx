@@ -6,6 +6,7 @@ import { InitialState } from '../../store';
 import { RiCheckboxBlankCircleFill } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import { resetState } from '../../store/asking';
+import { setVisibility } from '../../store/display';
 
 const Wrapper = styled.div`
   position: fixed;
@@ -98,7 +99,7 @@ const ChosenContent = styled.div`
   gap: 0 15px;
 `;
 
-function Result({ setVisibility }: { setVisibility: Function }) {
+function Result() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const answer = useSelector((state: InitialState) => state.answer);
@@ -115,7 +116,7 @@ function Result({ setVisibility }: { setVisibility: Function }) {
           if (confirm('설문지를 리셋하시겠습니까?')) {
             dispatch(resetState());
           }
-          setVisibility(false);
+          dispatch(setVisibility({ key: 'ResultPopup', value: false }));
           document.body.style.overflow = 'auto';
           navigate('/');
         }
