@@ -118,7 +118,11 @@ function Preview() {
             ></SubmittableQs>
           ))}
           <ButtonList>
-            <AddButton disabled={disabled} onClick={handleSubmit}>
+            <AddButton
+              disabled={disabled}
+              onClick={handleSubmit}
+              style={{ opacity: disabled ? 0.3 : 1 }}
+            >
               제출하기
             </AddButton>
             <ResetButton onClick={handleReset}>양식 지우기</ResetButton>
