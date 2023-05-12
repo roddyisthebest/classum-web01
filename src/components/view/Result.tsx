@@ -101,7 +101,7 @@ const ChosenContent = styled.div`
 function Result({ setVisibility }: { setVisibility: Function }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const result = useSelector((state: InitialState) => state.result);
+  const answer = useSelector((state: InitialState) => state.answer);
   const check = {
     isItShortStType: (typeIdx: number) => typeIdx === 1,
     isItLongStType: (typeIdx: number) => typeIdx === 2,
@@ -127,49 +127,49 @@ function Result({ setVisibility }: { setVisibility: Function }) {
           <InputTitle
             style={{ width: '100%', cursor: 'default' }}
             readOnly
-            value={result.title.length === 0 ? '제목없는 설문지' : result.title}
+            value={answer.title.length === 0 ? '제목없는 설문지' : answer.title}
           ></InputTitle>
           <InputDescription
             style={{ width: '100%', cursor: 'default' }}
             readOnly
             value={
-              result.description.length === 0 ? '설명없음' : result.description
+              answer.description.length === 0 ? '설명없음' : answer.description
             }
           ></InputDescription>
         </Title>
-        {result.contents.map((content) => (
-          <Content key={content.idx}>
-            {content.title.length !== 0 && (
+        {answer.results.map((result) => (
+          <Content key={result.idx}>
+            {result.title.length !== 0 && (
               <ContentInputTitle
                 readOnly
-                value={content.title}
+                value={result.title}
               ></ContentInputTitle>
             )}
 
-            {check.isItShortStType(content.type?.typeIdx as number) && (
+            {check.isItShortStType(result.type?.typeIdx as number) && (
               <ShortSt
                 placeholder="내 답변"
                 readOnly
-                value={content.text}
+                value={result.text}
               ></ShortSt>
             )}
-            {check.isItLongStType(content.type?.typeIdx as number) && (
+            {check.isItLongStType(result.type?.typeIdx as number) && (
               <LongSt
                 rows={4}
                 placeholder="내 답변"
-                value={content.text}
+                value={result.text}
                 readOnly
               ></LongSt>
             )}
-            {!check.isItShortStType(content.type?.typeIdx as number) &&
-              !check.isItLongStType(content.type?.typeIdx as number) &&
-              content.contents.map((cont) => (
-                <ChosenContent key={cont.contentIdx}>
+            {!check.isItShortStType(result.type?.typeIdx as number) &&
+              !check.isItLongStType(result.type?.typeIdx as number) &&
+              result.contents.map((content) => (
+                <ChosenContent key={content.contentIdx}>
                   <RiCheckboxBlankCircleFill
                     fontSize={20}
                     color="#6e7377"
                   ></RiCheckboxBlankCircleFill>
-                  {cont.text}
+                  {content.text}
                 </ChosenContent>
               ))}
           </Content>

@@ -6,7 +6,7 @@ import SubmittableQs from '../components/card/SubmittableQs';
 import { resetChosenContent } from '../store/asking';
 import { useEffect, useState } from 'react';
 import Result from '../components/view/Result';
-import { setResult } from '../store/result';
+import { setResult } from '../store/answer';
 
 const Container = styled.div`
   display: flex;

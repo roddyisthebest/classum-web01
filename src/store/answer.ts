@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Result } from '.';
+import { Answer } from '.';
 import { Content, Question, Type } from './asking';
 
-export interface Data {
+export interface Result {
   idx: number;
   title: string;
   contents: Content[];
@@ -11,12 +11,12 @@ export interface Data {
 }
 
 const { actions, reducer } = createSlice({
-  name: 'result',
+  name: 'answer',
   initialState: {
     title: '',
     description: '',
-    contents: [],
-  } as Result,
+    results: [],
+  } as Answer,
   reducers: {
     setResult(
       state,
@@ -30,24 +30,24 @@ const { actions, reducer } = createSlice({
     ) {
       const questions = [...payload.data];
 
-      const newContents: Data[] = [];
+      const newResults: Result[] = [];
 
       questions.map((question) => {
-        const contents = {
+        const result = {
           idx: question.questionIdx,
           title: question.title,
           text: question.text,
           type: question.type,
           contents: question.chosenContents,
         };
-        newContents.push(contents);
+        newResults.push(result);
       });
 
       return {
         ...state,
         title: payload.title,
         description: payload.description,
-        contents: newContents,
+        results: newResults,
       };
     },
   },
