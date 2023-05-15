@@ -10,6 +10,7 @@ export interface Result {
   type: Type | null;
 }
 
+// 제출한 데이터에 대한 스토어 - answer
 const { actions, reducer } = createSlice({
   name: 'answer',
   initialState: {

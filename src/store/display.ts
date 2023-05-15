@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// 특정 컴포넌트들의 가시성에 관련된 데이터에 대한 스토어 - display
+
 const { actions, reducer } = createSlice({
   name: 'display',
   initialState: {

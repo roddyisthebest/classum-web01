@@ -143,6 +143,8 @@ const CautionSection = styled.div`
   gap: 0 5px;
 `;
 
+// 제출 가능한 질문 컴포넌트입니다. - 편집 x, 오직 항목들 선택만 가능
+
 function SubmittableQs({ data, index }: { data: QuestionType; index: number }) {
   const [localSubmit, setLocalSubmit] = useState<{
     first: boolean;

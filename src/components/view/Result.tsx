@@ -98,6 +98,7 @@ const ChosenContent = styled.div`
   align-items: center;
   gap: 0 15px;
 `;
+// 제출 내용을 보여주는 결과 컴포넌트입니다.
 
 function Result() {
   const navigate = useNavigate();

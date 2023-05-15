@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components';
 import { InputTitle } from '../../util/style';
 import {
@@ -26,9 +26,9 @@ import {
   setType,
   updateContent,
 } from '../../store/asking';
-import { useDispatch, useSelector } from 'react-redux';
-import { InitialState } from '../../store';
-import { setVisibility } from '../../store/display';
+import { useDispatch } from 'react-redux';
+
+// 편집이 가능한 질문 컴포넌트입니다.
 
 const Container = styled.div`
   background-color: white;
@@ -222,10 +222,6 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
     { typeIdx: 5, englishName: 'dropdown', koreanName: '드롭다운' },
   ];
 
-  //   const visibility = useSelector(
-  //     (state: InitialState) => state.display.visibility.SelectBox
-  //   );
-
   const onClickBox = () => {
     dispatch(resetCheckBoxVb());
     dispatch(setCheckBoxVb({ questionIndex: index, value: true }));
@@ -276,7 +272,6 @@ function EditableQs({ data, index }: { data: QuestionType; index: number }) {
 
   const onClickSelectBoxBkg = () => {
     dispatch(resetCheckBoxVb());
-    // dispatch(setVisibility({ key: 'SelectBox', value: false }));
   };
 
   const check = {

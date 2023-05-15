@@ -45,6 +45,7 @@ const CautionColumn = styled.div`
   font-weight: 500;
 `;
 
+// 질문의 타이틀을 보여주는 타이틀 컴포넌트입니다.
 function Title({ readOnly }: { readOnly: boolean }) {
   const dispatch = useDispatch();
   const title = useSelector((state: InitialState) => state.asking.title);

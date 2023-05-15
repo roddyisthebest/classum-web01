@@ -22,6 +22,8 @@ export interface Question {
   checkBoxVb: boolean;
 }
 
+// 질문 데이터에 대한 스토어 - asking
+
 const { actions, reducer } = createSlice({
   name: 'asking',
   initialState: {

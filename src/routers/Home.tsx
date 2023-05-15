@@ -2,12 +2,11 @@ import React from 'react';
 import Title from '../components/view/Title';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { addQuestion, resetCheckBoxVb } from '../store/asking';
+import { addQuestion } from '../store/asking';
 import { AiFillEye } from 'react-icons/ai';
 import { InitialState } from '../store';
 import { Link } from 'react-router-dom';
 import EditableQs from '../components/card/EditableQs';
-import { setVisibility } from '../store/display';
 
 const Container = styled.div`
   display: flex;
@@ -55,14 +54,6 @@ const PreviewButton = styled(Link)`
   text-decoration: none;
 `;
 
-const SelectBoxBkg = styled.div`
-  width: 100%;
-  height: 100%;
-  position: absolute;
-
-  z-index: 10;
-`;
-
 function Home() {
   const dispatch = useDispatch();
   const questions = useSelector(
@@ -75,9 +66,6 @@ function Home() {
 
   return (
     <Container>
-      {/* {visibility && (
-        <SelectBoxBkg onClick={onClickSelectBoxBkg}></SelectBoxBkg>
-      )} */}
       <Title readOnly={false}></Title>
       <QuestionList>
         {questions.map((question, index) => (
